@@ -1,0 +1,4 @@
+Get-ADUser -Filter * -Properties * | Where-Object { $_.LockedOut -eq $true }
+
+Get-ADUser -Filter * -Properties * | Where-Object { $_.SAMAccountName -eq "User Name" }
+Get-ADGroup -Identity EndUsers | Get-ADGroupMember

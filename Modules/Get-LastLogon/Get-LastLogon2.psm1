@@ -1,4 +1,19 @@
-﻿#Import-Module ActiveDirectory
+﻿<# 
+ .Synopsis
+  Displays the Last logon for given user.
+
+ .Description
+  Displays the Last logon for given user.
+
+ .Parameter computerName
+  UserName - String containing the user name of the required user
+
+ .Example
+   # Displays the last logon for BillWithers
+   Get-ADUserLastLogon -UserName BillWithers
+#>
+
+Import-Module ActiveDirectory
 
 function Get-ADUserLastLogon{
 param(
@@ -14,7 +29,7 @@ param(
         }
     }
     $dt = [DateTime]::FromFileTime($time)
-    Write-Host $username "last logged on at:" $dt
+    Write-Host "$username last logged on at: $dt"
 }
-
-Get-ADUserLastLogon -UserName TimKnight
+Export-ModuleMember -Function Get-ADUserLastLogon
+#Get-ADUserLastLogon -UserName TimKnight

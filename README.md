@@ -7,7 +7,9 @@ The collection is broken down into two parts
                  from the command line to a single scheduled job
     2. Modules - these are add-ons that are required for multiple tasks
                  which can be run in an ad-hoc fashsion and are run as if 
-                 they are a cmdlet built into Powershell
+                 they are cmdlets built into Powershell. To use they need to
+                 be imported into the Powershell environment - Import-Module
+                 
 
 
 

@@ -42,7 +42,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 DEALINGS IN THE SOFTWARE.
 #>
-Function Get-LoggedOnUsers{
+
 [cmdletbinding()]
 Param(
     [Parameter(Mandatory=$true)]
@@ -58,5 +58,4 @@ if ($ComputerList.Length -ne 0){
         $OutputObject | Add-Member -MemberType NoteProperty -Name LoggedOnUser -Value $ComputerDetails.UserName
         $OutputObject
     }
-}
 }

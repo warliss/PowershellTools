@@ -1,8 +1,18 @@
 ﻿[cmdletbinding()]
-Param()
+Param(
+    [string]$ServerList = 'd:\serverlist.txt'
+)
+$ThrowError = $false
 # What are the computer names we want to get the CPU Usage for
 # Read from the following file
-$Servers = Get-Content 'h:\serverslist.txt'
+if (Test-Path $ServerList){
+    $Servers = Get-Content $ServerList
+} else {
+    $ThrowError = $true
+    Write-Host ("File ($ServerList) not found")
+    $ThrowError
+}
+
 
 # Functions
 Function Test_MemoryUsage($ComputerName){
@@ -18,20 +28,36 @@ Function Test_MemoryUsage($ComputerName){
     @{Name = "TotalGB";Expression = {[int]($_.TotalVisibleMemorySize/1mb)}}
 }
 
-foreach($Server in $Servers)
-{
-    $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-    $LoadPercentage = Get-WmiObject win32_processor -ComputerName $Server | select -ExpandProperty LoadPercentage
-    $os = Test_MemoryUsage($Server)
-    $log = New-Object psobject -Property @{
-        Time = $TimeStamp
-        Server = $Server
-        LoadPercentage = ($LoadPercentage | measure -Average).Average
-        MemoryStatus = $os.Status
-        MemoryFreePCT = $os.PctFree
-        FreeMemory = $os.FreeGB
-        TotalMemory = $os.TotalGb
+if ($ThrowError -ne $false){
+    foreach($Server in $Servers){
+        $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        $LoadPercentage = Get-WmiObject win32_processor -ComputerName $Server | select -ExpandProperty LoadPercentage
+        $os = Test_MemoryUsage($Server)
+        $log = New-Object -TypeName psobject -Property @{
+            Time = $TimeStamp
+            Server = $Server
+            LoadPercentage = ($LoadPercentage | Measure-Object -Average).Average
+            MemoryStatus = $os.Status
+            MemoryFreePCT = $os.PctFree
+            FreeMemory = $os.FreeGB
+            TotalMemory = $os.TotalGb
+            Notes = ''
+        }
+        # This line writes $log to screen. This could be written to a file to keep a log of the CPU Usage for the servers.
+        $Log | Export-Csv -Path h:\UsageCheck.csv -Append -NoTypeInformation
+    }else{
+        $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        $TimeStamp
+        $log = New-Object -TypeName psobject -Property @{
+            Time = $TimeStamp
+            Server = $null
+            LoadPercentage = $null
+            MemoryStatus = $null
+            MemoryFreePCT = $null
+            FreeMemory = $null
+            TotalMemory = $null
+            Notes = "Error: File $Servers not found, please check $ try again."
+        }
     }
-    # This line writes $log to screen. This could be written to a file to keep a log of the CPU Usage for the servers.
-    $Log | Export-Csv -Path h:\UsageCheck.csv -Append -NoTypeInformation
 }
+Write-Host("Output: $TimeStamp")

@@ -7,15 +7,23 @@ Things still to be done
     1. Error handling for both the Invoke-WebRequest lines
     2. Check if credential file exists
 
+Creating the credential XML file
+$CredXmlPath = Join-Path (Split-Path $Profile) TestScript.ps1.credential
+$Credential = Get-Credential
+$Credential | Export-Clixml $CredPath
+
+$Credential = Import-Clixml $CredXmlPath
+
+
 #>
 [cmdletbinding()]
 Param(
   [string]$HostName = 'warliss.hopto.org',
-  [string]$credentialPath = '.\credential.xml'
+  [string]$credentialPath = $env:USERPROFILE + '\credential.xml'
 )
 
 $credential = Import-Clixml -Path $credentialPath
-$ipFinder = (Invoke-WebRequest('https://xxifcfg.me/ip'))
+$ipFinder = (Invoke-WebRequest('https://ifcfg.me/ip'))
 
 if($ipFinder.StatusCode -eq 200){
     Write-Verbose("StatusCode is good...")

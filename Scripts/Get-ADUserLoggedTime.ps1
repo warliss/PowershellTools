@@ -5,7 +5,7 @@
 [cmdletbinding()]
 param (
     [string]$SearchBase,
-    [string]$OutputFile = 'c:\Output.csv'
+    [string]$OutputFile = [Environment]::GetFolderPath("Desktop") + '\Output.csv'
 )
 
 #$OutputFile = 'h:\ADUserLastLogin_Coated.csv'
@@ -15,14 +15,16 @@ param (
 #    Select CN,samaccountname,@{n="lastLogonDate";e={[datetime]::FromFileTime($_.lastLogonTimestamp)}},UserPrincipalName,Enabled |
 #    Export-CSV -NoType -Path $OutputFile
 
-$Results = Get-ADUser -Filter * -SearchBase $SearchBase
-$Results.CN
+$Results = Get-ADUser -Filter * -SearchBase $SearchBase -Properties CN,SamAccountName,LastLogontimestamp,UserPrincipalName,enabled
+#$Results.CN
 foreach ($obj in $Results){
-    [string]$LastLoggedTime = $obj.lastLogonTimestamp
+    $LastLoggedTime = [datetime]::FromFileTime($obj.lastLogonTimestamp).ToString('dd/MM/yyyy HH:mm:ss')
     $OutputObject = New-Object -TypeName PSObject
-    #$OutputObject | Add-Member -MemberType CN -Name ComputerName -Value $obj.CN
+    $OutputObject | Add-Member -MemberType NoteProperty -Name FullName -Value $obj.CN
+    $OutputObject | Add-Member -MemberType NoteProperty -Name GivenName -Value $obj.GivenName
+    $OutputObject | Add-Member -MemberType NoteProperty -Name Surname -Value $obj.Surname
     $OutputObject | Add-Member -MemberType NoteProperty -Name SamAccountName -Value $obj.samaccountname
-    $OutputObject | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value {[datetime]::FromFileTime($LastLoggedTime)} # This might not work
+    $OutputObject | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value $LastLoggedTime
     $OutputObject | Add-Member -MemberType NoteProperty -Name UserPrincipalName -Value $obj.UserPrincipalName
     $OutputObject | Add-Member -MemberType NoteProperty -Name Enabled -Value $obj.Enabled
     $OutputObject | Sort-Object -Property Surname | Export-Csv -Path $OutputFile -NoTypeInformation -Append

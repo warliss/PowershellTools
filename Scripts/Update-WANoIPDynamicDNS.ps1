@@ -23,7 +23,7 @@ Param(
 )
 
 $credential = Import-Clixml -Path $credentialPath
-$ipFinder = (Invoke-WebRequest('https://ifcfg.me/ip'))
+$ipFinder = (Invoke-WebRequest('http://canhazip.com'))
 
 if($ipFinder.StatusCode -eq 200){
     Write-Verbose("StatusCode is good...")

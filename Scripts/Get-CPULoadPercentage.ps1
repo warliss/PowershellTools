@@ -22,7 +22,7 @@ Function Test_MemoryUsage($ComputerName){
     if ($pctFree -ge 45){ $Status = "OK" }
     elseif ($pctFree -ge 15){ $Status = "Warning" }
     else { $Status = "Critical" }
-    $os | Select @{Name = "Status";Expression = {$Status}},
+    $os | Select-Object @{Name = "Status";Expression = {$Status}},
     @{Name = "PctFree"; Expression = {$pctFree}},
     @{Name = "FreeGB";Expression = {[math]::Round($_.FreePhysicalMemory/1mb,2)}},
     @{Name = "TotalGB";Expression = {[int]($_.TotalVisibleMemorySize/1mb)}}
@@ -31,7 +31,7 @@ Function Test_MemoryUsage($ComputerName){
 if ($ThrowError -ne $false){
     foreach($Server in $Servers){
         $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-        $LoadPercentage = Get-WmiObject win32_processor -ComputerName $Server | select -ExpandProperty LoadPercentage
+        $LoadPercentage = Get-WmiObject win32_processor -ComputerName $Server | Select-Object -ExpandProperty LoadPercentage
         $os = Test_MemoryUsage($Server)
         $log = New-Object -TypeName psobject -Property @{
             Time = $TimeStamp

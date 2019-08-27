@@ -10,8 +10,8 @@ The collection is broken down into two parts
                  they are cmdlets built into Powershell. To use they need to
                  be imported into the Powershell environment - Import-Module
                  
+There are also two other folders Snippets and WIP (Work In Progress) that contain short
+    testers for the scripts and the scripts that are currently being worked upon.
 
-Updated from SEACHW011
-20180130
-
-
+Updated from SEACHW009  20190827
+Updated from SEACHW011  20180130

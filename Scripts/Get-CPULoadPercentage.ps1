@@ -45,19 +45,19 @@ if ($ThrowError -ne $false){
         }
         # This line writes $log to screen. This could be written to a file to keep a log of the CPU Usage for the servers.
         $Log | Export-Csv -Path h:\UsageCheck.csv -Append -NoTypeInformation
-    }else{
-        $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-        $TimeStamp
-        $log = New-Object -TypeName psobject -Property @{
-            Time = $TimeStamp
-            Server = $null
-            LoadPercentage = $null
-            MemoryStatus = $null
-            MemoryFreePCT = $null
-            FreeMemory = $null
-            TotalMemory = $null
-            Notes = "Error: File $Servers not found, please check $ try again."
-        }
+    }
+}else{
+    $TimeStamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    $TimeStamp
+    $log = New-Object -TypeName psobject -Property @{
+        Time = $TimeStamp
+        Server = $null
+        LoadPercentage = $null
+        MemoryStatus = $null
+        MemoryFreePCT = $null
+        FreeMemory = $null
+        TotalMemory = $null
+        Notes = "Error: File $Servers not found, please check $ try again."
     }
 }
 Write-Host("Output: $TimeStamp")
